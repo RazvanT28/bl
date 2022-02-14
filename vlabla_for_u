@@ -1,83 +1,205 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
+#include <iostream>
+#include <string>
+#include <limits>
+#include <math.h>
+#include <iomanip>
+#include <limits>
 
 
+//Clasa de Baza
+class PlatitorTaxe {
 
-class Poligon {
+    //Date membre
+protected:
+    std::string tip_entitate;
+    std::string nume;
+    int suma_in;//suma incasata in 2021
+    int suma_n;// Suma care nu este taxabilă din suma încasată
 
-
+    //Constructor
 public:
-    Poligon() {};
-    virtual float aria() = 0;
-    virtual void afisare() = 0;
 
+    //Conctructor Gol
+    PlatitorTaxe() {}
+
+
+    //Constructoru cu Lista de Initializare
+    PlatitorTaxe(std::string tip_entitate, std::string nume, int suma_in, int suma_n) : tip_entitate(tip_entitate), nume(nume), suma_in(suma_in), suma_n(suma_n) {}
+
+
+    //Functii
+public:
+
+    //Setters si Getters
+    virtual std::string get_nume() { return this->nume; }
+
+    //Alte Functii
+    virtual void afisare() {}
+
+    virtual void grup_2(int x) {}
 };
 
 
-class Triunghi :public Poligon {
+//Clasa Derivata din Baza
+class Persoana_Fizica : public PlatitorTaxe {
 
-
+    //Date membre
 private:
 
-    int h;
-    int b;
+
+    //Constructor
 public:
-    Triunghi(int h, int b) :b(b), h(h) {};
-    float aria() {
-        return(h * b / 2);
+
+    //Conctructor Gol
+    Persoana_Fizica() {}
+
+
+    //Constructoru cu Lista de Initializare
+    Persoana_Fizica(std::string tip_entitate, std::string nume, int suma_in, int suma_n) : PlatitorTaxe(tip_entitate, nume, suma_in, suma_n) {}
+
+
+    //Functii
+public:
+
+    //Setters si Getters
+
+
+    //Alte Functii
+    void afisare() { std::cout << nume << "\n" << suma_in << std::endl; }
+
+    void grup_2(int x) {
+        std::cout << nume << std::endl;
+        std::cout << suma_in << std::endl;
     }
-    void afisare()
-    {
-        std::cout << h << ' ' << b << std::endl;
-    }
+
 };
 
-class Paralelogram :public Poligon
-{
+
+//Clasa Derivata din Baza
+class Firma : public PlatitorTaxe {
+
+    //Date membre
 private:
-    int l1;
-    int l2;
+
+
+    //Constructor
 public:
-    Paralelogram(int l1, int l2) :l1(l1), l2(l2) {};
-    float aria() {
-        return(l1 * l2);
+
+    //Conctructor Gol
+    Firma() {}
+
+
+    //Constructoru cu Lista de Initializare
+    Firma(std::string tip_entitate, std::string nume, int suma_in, int suma_n) : PlatitorTaxe(tip_entitate, nume, suma_in, suma_n) {}
+
+
+    //Functii
+public:
+
+    //Setters si Getters
+
+
+    //Alte Functii
+    void afisare() { std::cout << nume << "\n" << suma_in << std::endl; }
+
+    void grup_2(int x) {
+       
+        std::cout << nume << std::endl;
+        std::cout << suma_in << std::endl;
     }
-    void afisare() {
-        std::cout << l1 << ' ' << l2 << std::endl;
-    }
+
 };
 
-bool comp(Poligon* a, Poligon* b)
-{
-    return(a->aria() < b->aria());
-}
+
+
+
+//Clasa
+class FirmaInchirieri {
+
+};
+
+
+
+//Functia main
 int main()
 {
-    int n;
-    float a, b; std::cin >> n;
-    std::vector<Poligon*> x;
-    for (int i = 0; i < n; i++)
-    {
-        std::cin >> a >> b;
-        Poligon* X = new Triunghi(a, b);
-        x.push_back(X);
-        // x[0]->afisare();
+
+    std::string tip_entitate;
+    std::string nume;
+    int suma_in;
+    int suma_n;
+
+
+
+
+    int optiune;
+    std::cin >> optiune;
+
+    int numar_entitati;
+    std::cin >> numar_entitati;
+
+    //Facem Array de Obiecte (Toate pot sa fie de o clasa diferita)
+        //Folosim Alocare Dinamica
+
+    PlatitorTaxe** platitor_array = nullptr;
+    platitor_array = new PlatitorTaxe * [numar_entitati];
+
+    int k = 0; //Variabila de lucru care pune pe pozitii
+
+
+    //Generam fiecare obiect
+    for (int i = 0; i < numar_entitati; i++) {
+
+        std::cin >> tip_entitate;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::getline(std::cin, nume);
+        std::cin >> suma_in;
+        std::cin >> suma_n;
+
+        if (tip_entitate == "Persoana Fizica") {
+            *(platitor_array + (k++)) = new Persoana_Fizica(tip_entitate, nume, suma_in, suma_n);
+        }
+
+        if (tip_entitate == "Firma") {
+            *(platitor_array + (k++)) = new Firma(tip_entitate, nume, suma_in, suma_n);
+        }
+
 
     }
-    for (int i = 0; i < n; i++)
-    {
-        std::cin >> a >> b;
-        Poligon* Y = new Paralelogram(a, b);
-        x.push_back(Y);
-    }
 
-    sort(x.begin(), x.end(), comp);
-    for (auto a : x)
-    {
-        a->afisare();
+    //Optiune 1
+    if (optiune == 1) {
+
+        for (int i = 0; i < numar_entitati; i++) {
+            (*(platitor_array + i))->afisare();
+        }
     }
 
 
-    return 0; //iuui
+    //Optiune 2
+   /*/ if (optiune == 2) {
+
+        int capacitate_necesara;
+        std::cin >> capacitate_necesara;
+
+        for (int i = 0; i < numar_automobile; i++) {
+            (*(automobil_array + i))->grup_2(capacitate_necesara);
+
+        }
+
+    }*/
+
+    //Optiune 3
+    if (optiune == 3) {
+
+    }
+
+
+    //Optiune 4
+    if (optiune == 4) {
+
+    }
+
+
+    return 0;
 }
