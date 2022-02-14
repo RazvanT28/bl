@@ -5,18 +5,16 @@
 #include <iomanip>
 #include <limits>
 
-///nu mi merge afisarea, dar pana atunci, scrie de aici
-
 
 //Clasa de Baza
 class PlatitorTaxe {
 
     //Date membre
 protected:
-    std::string tip_entitate;
-    std::string nume;
-    int suma_in;//suma incasata in 2021
-    int suma_n;// Suma care nu este taxabilă din suma încasată
+    std::string tip_entitate="";
+    std::string nume="";
+    int suma_in=0;//suma incasata in 2021
+    int suma_n=0;// Suma care nu este taxabilă din suma încasată
 
     //Constructor
 public:
@@ -34,16 +32,23 @@ public:
 
     //Setters si Getters
     virtual std::string get_nume() { return this->nume; }
+   int get_suma_in() 
+   {
+       return this->suma_in;
+ }
 
     //Alte Functii
-    virtual void afisare() {}
+    virtual void afisare() {
+        std::cout << nume << std::endl;
+        std::cout << suma_in << std::endl;
+    }
 
-    virtual void grup_2(int x) {}
+    virtual void taxe(int p_pers, int p_firma) {}
 };
 
 
 //Clasa Derivata din Baza
-class Persoana_Fizica : public PlatitorTaxe {
+class PersoanaFizica : public PlatitorTaxe {
 
     //Date membre
 private:
@@ -53,11 +58,11 @@ private:
 public:
 
     //Conctructor Gol
-    Persoana_Fizica() {}
+    PersoanaFizica() {}
 
 
     //Constructoru cu Lista de Initializare
-    Persoana_Fizica(std::string tip_entitate, std::string nume, int suma_in, int suma_n) : PlatitorTaxe(tip_entitate, nume, suma_in, suma_n) {}
+    PersoanaFizica(std::string tip_entitate, std::string nume, int suma_in, int suma_n) : PlatitorTaxe(tip_entitate, nume, suma_in, suma_n) {}
 
 
     //Functii
@@ -67,11 +72,28 @@ public:
 
 
     //Alte Functii
-    void afisare() { std::cout << nume << "\n" << suma_in << std::endl; }
+    void afisare() { 
+        std::cout << nume << "\n" << suma_in << std::endl;
+  
+    
+    }
 
-    void grup_2(int x) {
-        std::cout << nume << std::endl;
-        std::cout << suma_in << std::endl;
+    void taxe(int p_pers, int p_firma) {
+
+        
+
+        if (tip_entitate == "Persoana Fizica") {
+            int calcul = (suma_in - suma_n) * (100 - p_pers) / 100;
+            std::cout << nume << std::endl;
+            std::cout << calcul << std::endl;
+        }
+
+        if (tip_entitate == "Firma") {
+            int calcul = (suma_in - suma_n) * (100 - p_firma) / 100;
+            std::cout << nume << std::endl;
+            std::cout << calcul << std::endl;
+        }
+       
     }
 
 };
@@ -102,12 +124,28 @@ public:
 
 
     //Alte Functii
-    void afisare() { std::cout << nume << "\n" << suma_in << std::endl; }
+    void afisare() { 
+   
 
-    void grup_2(int x) {
-       
-        std::cout << nume << std::endl;
-        std::cout << suma_in << std::endl;
+        std::cout << nume << "\n" << suma_in << std::endl; 
+    }
+
+    void taxe(int p_pers, int p_firma) {
+
+
+
+        if (tip_entitate == "Persoana Fizica") {
+            int calcul = (suma_in - suma_n) * (100 - p_pers) / 100;
+            std::cout << nume << std::endl;
+            std::cout << calcul << std::endl;
+        }
+
+        if (tip_entitate == "Firma") {
+            int calcul = (suma_in - suma_n) * (100 - p_firma) / 100;
+            std::cout << nume << std::endl;
+            std::cout << calcul << std::endl;
+        }
+
     }
 
 };
@@ -116,7 +154,7 @@ public:
 
 
 //Clasa
-class FirmaInchirieri {
+class AgentieAdministrareFiscala {
 
 };
 
@@ -159,7 +197,7 @@ int main()
         std::cin >> suma_n;
 
         if (tip_entitate == "Persoana Fizica") {
-            *(platitor_array + (k++)) = new Persoana_Fizica(tip_entitate, nume, suma_in, suma_n);
+            *(platitor_array + (k++)) = new PersoanaFizica(tip_entitate, nume, suma_in, suma_n);
         }
 
         if (tip_entitate == "Firma") {
@@ -170,6 +208,7 @@ int main()
     }
 
     //Optiune 1
+ 
     if (optiune == 1) {
 
         for (int i = 0; i < numar_entitati; i++) {
@@ -179,17 +218,21 @@ int main()
 
 
     //Optiune 2
-   /*/ if (optiune == 2) {
+    if (optiune == 2) {
 
-        int capacitate_necesara;
-        std::cin >> capacitate_necesara;
+        int p_pers;
+        int p_firma;
+        std::cin >> p_pers;
+        std::cin >> p_firma;
 
-        for (int i = 0; i < numar_automobile; i++) {
-            (*(automobil_array + i))->grup_2(capacitate_necesara);
+
+
+        for (int i = 0; i < numar_entitati; i++) {
+            (*(platitor_array + i))->taxe(p_pers, p_firma);
 
         }
 
-    }*/
+    }
 
     //Optiune 3
     if (optiune == 3) {
